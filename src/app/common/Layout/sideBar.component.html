@@ -1,0 +1,18 @@
+<div class="w-64 bg-white shadow-md h-full">
+    <div class="p-4 border-b border-gray-200">
+        <h1 class="text-xl font-semibold text-gray-800">Mi Aplicación</h1>
+    </div>
+
+    <nav class="p-4">
+        <ul>
+            <li *ngFor="let item of navegacion">
+                <a [routerLink]="item.navegacion" class="flex items-center p-2 text-gray-600 rounded hover:bg-gray-200">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icono"/>
+                    </svg>
+                    {{item.titulo}}
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

@@ -1,24 +1,95 @@
-<section class="py-[2rem]">
-    <div class="lg:mx-auto mx-[1.5rem] max-w-5xl">
-        <h1 class="font-bold text-center mb-5 text-[2rem]">Productos</h1>
-    </div>
-    <button
-      class="
-        bg-indigo-500
-        hover:bg-indigo-600
-        p-3
-        rounded-xl
-        text-white
-        font-bold
-        mb-5
-      "
-      (click)="agregar()"
-    >
-      Agregar Producto
-    </button>
-    <!-- <ul>
-        <li *ngFor="let producto of productos$ | async">
-          {{ producto.nombre }} - {{ producto.precio }}
-        </li>
-    </ul> -->
-</section>
+<div class="max-w-6xl mx-auto p-6">
+
+  <!-- Título -->
+  <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Gestión de Productos</h1>
+
+  <!-- Botón de agregar producto -->
+  <div class="flex justify-end mb-4">
+      <button class="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none" (click)="openModal()">
+          Agregar Producto
+      </button>
+  </div>
+
+  <!-- Tabla de productos -->
+  <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+      <table class="min-w-full table-auto">
+          <thead class="bg-gray-200">
+              <tr>
+                  <th class="px-4 py-2 text-left text-sm text-gray-600">ID</th>
+                  <th class="px-4 py-2 text-left text-sm text-gray-600">Nombre</th>
+                  <th class="px-4 py-2 text-left text-sm text-gray-600">Categoría</th>
+                  <th class="px-4 py-2 text-left text-sm text-gray-600">SuperCategoría</th>
+                  <th class="px-4 py-2 text-left text-sm text-gray-600">Precio</th>
+                  <th class="px-4 py-2 text-left text-sm text-gray-600">Stock</th>
+                  <th class="px-4 py-2 text-left text-sm text-gray-600">Acciones</th>
+              </tr>
+          </thead>
+          <tbody id="productosTable">
+              @for(item of productos; track $index){
+                <tr>
+                  <td class="px-4 py-2 text-sm text-gray-700">{{item.id}}</td>
+                  <td class="px-4 py-2 text-sm text-gray-700">{{item.nombre}}</td>
+                  <td class="px-4 py-2 text-sm text-gray-700">{{item.categoria}}</td>
+                  <td class="px-4 py-2 text-sm text-gray-700">{{item.superCategoria}}</td>
+                  <td class="px-4 py-2 text-sm text-gray-700">{{item.precio}}</td>
+                  <td class="px-4 py-2 text-sm text-gray-700">{{item.stock}}</td>
+                  <td>
+                    <!-- Botones de acción -->
+                    <button class="px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">Editar</button>
+                    <button class="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600">Eliminar</button>
+                  </td>
+                </tr>
+              }
+              
+              <!-- Agrega más filas según sea necesario -->
+          </tbody>
+      </table>
+  </div>
+
+  <!-- Modal para agregar o editar producto -->
+  <div 
+    *ngIf="isModalOpen"
+    class="fixed inset-0 z-50 overflow-y-auto"
+    aria-labelledby="modal-title"
+    role="dialog"
+    aria-modal="true"
+  >
+
+    <div class="fixed inset-0 flex items-center justify-center bg-custom p-4">
+      <div class="w-full max-w-md bg-white rounded-lg shadow-xl p-6 max-h-screen overflow-y-auto">
+          <form>
+              <div class="mb-4">
+                  <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+                  <input type="text" [(ngModel)]="productoObj.nombre" id="nombre" name="nombre" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+              </div>
+  
+              <div class="mb-4">
+                  <label for="categoria" class="block text-sm font-medium text-gray-700">Categoría</label>
+                  <input type="text" id="categoria" name="categoria" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+              </div>
+  
+              <div class="mb-4">
+                  <label for="precio" class="block text-sm font-medium text-gray-700">Precio</label>
+                  <input type="number" [(ngModel)]="productoObj.precio" id="precio" name="precio" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+              </div>
+  
+              <div class="mb-4">
+                  <label for="stock" class="block text-sm font-medium text-gray-700">Stock</label>
+                  <input type="number" [(ngModel)]="productoObj.stock" id="stock" name="stock" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+              </div>
+  
+              <div class="mb-4">
+                  <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
+                  <textarea id="descripcion" [(ngModel)]="productoObj.descripcion" name="descripcion" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+              </div>
+  
+              <div class="flex justify-end">
+                  <button type="submit" class="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 focus:outline-none">Guardar</button>
+                  <button type="button" id="closeModalButton" class="px-6 py-2 bg-gray-500 text-white font-semibold rounded-lg shadow-md hover:bg-gray-600 focus:outline-none ml-4" (click)="closeModal()">Cancelar</button>
+              </div>
+          </form>
+      </div>
+  </div>
+  </div>
+
+</div>
