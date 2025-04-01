@@ -82,6 +82,27 @@
                   <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
                   <textarea id="descripcion" [(ngModel)]="productoObj.descripcion" name="descripcion" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
               </div>
+
+              <form class="example-form">
+                <mat-form-field class="example-full-width">
+                  <input 
+                    type="text" 
+                    placeholder="Pick one" 
+                    aria-label="Number" 
+                    matInput 
+                    [formControl]="myControl" 
+                    [matAutocomplete]="auto">
+                  <mat-autocomplete 
+                    #auto="matAutocomplete"
+                    [displayWith]="getTitle.bind(this)">
+                    <mat-option 
+                      *ngFor="let cat of categorias" 
+                      [value]="cat.Id">
+                      {{cat.Nombre}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </form>
   
               <div class="flex justify-end">
                   <button type="submit" class="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 focus:outline-none">Guardar</button>

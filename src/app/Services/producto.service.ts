@@ -19,6 +19,13 @@ export class ProductoService {
         );
     }
 
+    getCategoriasTA(){
+        const request = '/productos/obtenerCategoriasTA';
+        return this.http.get<Array<{ Id: string; Nombre: string }>>(
+            environment.api+request
+        );
+    }
+
     /* async getAll(): Promise<any> {
         const request = '/productos/obtenerProductos';
         const url = environment.api + request;
