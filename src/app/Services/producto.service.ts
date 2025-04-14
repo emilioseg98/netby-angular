@@ -21,9 +21,14 @@ export class ProductoService {
 
     getCategoriasTA(){
         const request = '/productos/obtenerCategoriasTA';
-        return this.http.get<Array<{ Id: string; Nombre: string }>>(
+        return this.http.get<Array<{ Id: string; Nombre: string, Supercategoria: string }>>(
             environment.api+request
         );
+    }
+
+    agregarProductos(p: Producto){
+        const request = '/productos/insertarProducto';
+        return this.http.post(environment.api+request, p)
     }
 
     /* async getAll(): Promise<any> {

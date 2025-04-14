@@ -29,8 +29,8 @@
                 <tr>
                   <td class="px-4 py-2 text-sm text-gray-700">{{item.id}}</td>
                   <td class="px-4 py-2 text-sm text-gray-700">{{item.nombre}}</td>
-                  <td class="px-4 py-2 text-sm text-gray-700">{{item.categoria}}</td>
-                  <td class="px-4 py-2 text-sm text-gray-700">{{item.superCategoria}}</td>
+                  <td class="px-4 py-2 text-sm text-gray-700">{{item.categoriasProd.nombre}}</td>
+                  <td class="px-4 py-2 text-sm text-gray-700">{{item.categoriasProd.supercategoria}}</td>
                   <td class="px-4 py-2 text-sm text-gray-700">{{item.precio}}</td>
                   <td class="px-4 py-2 text-sm text-gray-700">{{item.stock}}</td>
                   <td>
@@ -57,17 +57,23 @@
 
     <div class="fixed inset-0 flex items-center justify-center bg-custom p-4">
       <div class="w-full max-w-md bg-white rounded-lg shadow-xl p-6 max-h-screen overflow-y-auto">
-          <form>
+          <form (ngSubmit)="crearProducto()">
               <div class="mb-4">
                   <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
                   <input type="text" [(ngModel)]="productoObj.nombre" id="nombre" name="nombre" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
               </div>
   
-              <div class="mb-4">
-                  <label for="categoria" class="block text-sm font-medium text-gray-700">Categoría</label>
-                  <input type="text" id="categoria" name="categoria" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
-              </div>
-  
+              <mat-form-field>
+                <mat-label>Seleccionar una Categoría</mat-label>
+                <mat-select [(ngModel)]="productoObj.categoriasProd" name="categoria">
+                  <mat-option
+                    *ngFor="let cat of categorias"
+                    [value]="cat"
+                  >
+                    {{cat.Nombre}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
               <div class="mb-4">
                   <label for="precio" class="block text-sm font-medium text-gray-700">Precio</label>
                   <input type="number" [(ngModel)]="productoObj.precio" id="precio" name="precio" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
@@ -83,26 +89,13 @@
                   <textarea id="descripcion" [(ngModel)]="productoObj.descripcion" name="descripcion" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
               </div>
 
-              <form class="example-form">
-                <mat-form-field class="example-full-width">
-                  <input 
-                    type="text" 
-                    placeholder="Pick one" 
-                    aria-label="Number" 
-                    matInput 
-                    [formControl]="myControl" 
-                    [matAutocomplete]="auto">
-                  <mat-autocomplete 
-                    #auto="matAutocomplete"
-                    [displayWith]="getTitle.bind(this)">
-                    <mat-option 
-                      *ngFor="let cat of categorias" 
-                      [value]="cat.Id">
-                      {{cat.Nombre}}
-                    </mat-option>
-                  </mat-autocomplete>
-                </mat-form-field>
-              </form>
+              <mat-form-field>
+                <mat-label>Fecha</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="productoObj.fecha_Creacion" name="fecha_Creacion">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
   
               <div class="flex justify-end">
                   <button type="submit" class="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 focus:outline-none">Guardar</button>

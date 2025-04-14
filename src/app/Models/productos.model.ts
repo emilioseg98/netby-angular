@@ -1,8 +1,7 @@
 export interface Producto {
     id: number,
     nombre: string,
-    categoria: string,
-    superCategoria: string;
+    categoriasProd: {id: string, nombre: string, supercategoria: string},
     descripcion: string,
     imagen: string,
     precio: number,

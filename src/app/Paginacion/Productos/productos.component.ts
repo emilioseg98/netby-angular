@@ -8,11 +8,16 @@ import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms'
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 @Component({
   selector: 'app-productos',
   templateUrl: './productos.component.html',
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatAutocompleteModule],
+  providers: [provideNativeDateAdapter()],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, 
+    ReactiveFormsModule, MatAutocompleteModule, MatSelectModule, MatDatepickerModule],
   styleUrls: ['./productos.componente.scss']
 })
 export class ProductosComponent implements OnInit {
@@ -21,15 +26,18 @@ export class ProductosComponent implements OnInit {
   productoObj: Producto = {
     id: 0,
     nombre: "",
-    categoria: '',
-    superCategoria: '',
+    categoriasProd: {
+      id: '',
+      nombre: '',
+      supercategoria: ''
+    },
     descripcion: '',
     imagen: '',
     precio: 0,
     stock: 0,
     fecha_Creacion: ''
   }
-  categorias: Array<{ Id: string; Nombre: string }> = [];
+  categorias: Array<{ Id: string; Nombre: string, Supercategoria: string }> = [];
   constructor(private _service:ProductoService) { }
 
   ngOnInit(): void {
@@ -80,6 +88,26 @@ export class ProductosComponent implements OnInit {
 
   getTitle = (catId: string) => {
     return this.categorias.find(c => c.Id === catId)?.Nombre ?? '';
+  }
+
+  crearProducto () {
+    console.log("asdasd", (this.productoObj.categoriasProd as any)["Id"]);
+    var prod = {
+      ...this.productoObj,
+      categoriaId: (this.productoObj.categoriasProd as any)["Id"]
+    }
+    this._service.agregarProductos(prod).subscribe({
+      next: (data) => {
+        this.closeModal()
+      },
+      error: (err) => {
+        if (err.status === 0) {
+          console.error('Error de conexión: El servidor no responde o hay problemas de CORS');
+        } else {
+          console.error('Error:', err);
+        }
+      }
+    })
   }
   
   title = 'Aqui van los productos';
