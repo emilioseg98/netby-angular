@@ -26,6 +26,13 @@ export class ProductoService {
         );
     }
 
+    obtenerProducto(id: number){
+        const request = '/productos/obtenerProducto/'+id;
+        return this.http.get<Producto>(
+            environment.api+request
+        );
+    }
+
     agregarProductos(p: Producto){
         const request = '/productos/insertarProducto';
         return this.http.post(environment.api+request, p)

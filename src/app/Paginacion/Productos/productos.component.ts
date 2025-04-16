@@ -86,8 +86,29 @@ export class ProductosComponent implements OnInit {
     document.body.style.overflow = '';
   }
 
+  obtenerProductoFunc(data: any) {
+    this.openModal()
+    this._service.obtenerProducto(data.id).subscribe({
+      next: (data) => {
+        console.log("PRODUCTO: ", data)
+        this.productoObj = data
+      },
+      error: (err) => {
+        if (err.status === 0) {
+          console.error('Error de conexión: El servidor no responde o hay problemas de CORS');
+        } else {
+          console.error('Error:', err);
+        }
+      }
+    })
+  }
+
   getTitle = (catId: string) => {
     return this.categorias.find(c => c.Id === catId)?.Nombre ?? '';
+  }
+
+  log(data: any){
+    console.log("CATEGORIAS asdasda: ", data)
   }
 
   crearProducto () {

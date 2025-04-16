@@ -35,7 +35,7 @@
                   <td class="px-4 py-2 text-sm text-gray-700">{{item.stock}}</td>
                   <td>
                     <!-- Botones de acción -->
-                    <button class="px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">Editar</button>
+                    <button class="px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600" (click)="obtenerProductoFunc(item)">Editar</button>
                     <button class="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600">Eliminar</button>
                   </td>
                 </tr>
@@ -68,7 +68,7 @@
                 <mat-select [(ngModel)]="productoObj.categoriasProd" name="categoria">
                   <mat-option
                     *ngFor="let cat of categorias"
-                    [value]="cat"
+                    [value]="productoObj.categoriasProd"
                   >
                     {{cat.Nombre}}
                   </mat-option>
