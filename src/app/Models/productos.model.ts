@@ -1,7 +1,7 @@
 export interface Producto {
     id: number,
     nombre: string,
-    categoriasProd: {id: string, nombre: string, supercategoria: string},
+    categoriasProd: any,
     descripcion: string,
     imagen: string,
     precio: number,

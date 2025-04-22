@@ -21,6 +21,7 @@ import {provideNativeDateAdapter} from '@angular/material/core';
   styleUrls: ['./productos.componente.scss']
 })
 export class ProductosComponent implements OnInit {
+  private esCrearProducto: boolean;
   myControl = new FormControl('1');
   productos: Producto[]=[];
   productoObj: Producto = {
@@ -38,7 +39,15 @@ export class ProductosComponent implements OnInit {
     fecha_Creacion: ''
   }
   categorias: Array<{ Id: string; Nombre: string, Supercategoria: string }> = [];
-  constructor(private _service:ProductoService) { }
+  constructor(private _service:ProductoService) { this.esCrearProducto = true; }
+
+  public get getEsCrearProducto(): boolean {
+    return this.esCrearProducto;
+  }
+
+  public set setEsCrearProducto(val: boolean) {
+    this.esCrearProducto = val;
+  }
 
   ngOnInit(): void {
       this._service.getAll().subscribe({
@@ -83,11 +92,13 @@ export class ProductosComponent implements OnInit {
   
   closeModal() {
     this.isModalOpen = false;
+    this.esCrearProducto = true;
     document.body.style.overflow = '';
   }
 
   obtenerProductoFunc(data: any) {
     this.openModal()
+    this.setEsCrearProducto = false;
     this._service.obtenerProducto(data.id).subscribe({
       next: (data) => {
         console.log("PRODUCTO: ", data)
@@ -112,12 +123,31 @@ export class ProductosComponent implements OnInit {
   }
 
   crearProducto () {
-    console.log("asdasd", (this.productoObj.categoriasProd as any)["Id"]);
+    console.log("asdasd", this.productoObj);
     var prod = {
       ...this.productoObj,
       categoriaId: (this.productoObj.categoriasProd as any)["Id"]
     }
     this._service.agregarProductos(prod).subscribe({
+      next: (data) => {
+        this.closeModal()
+      },
+      error: (err) => {
+        if (err.status === 0) {
+          console.error('Error de conexión: El servidor no responde o hay problemas de CORS');
+        } else {
+          console.error('Error:', err);
+        }
+      }
+    })
+  }
+
+  actualizarProducto (id: number) {
+    var prod = {
+      ...this.productoObj,
+      categoriaId: (this.productoObj.categoriasProd as any)["Id"]
+    }
+    this._service.actualizarProducto(id, prod).subscribe({
       next: (data) => {
         this.closeModal()
       },

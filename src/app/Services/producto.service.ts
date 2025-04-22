@@ -38,6 +38,11 @@ export class ProductoService {
         return this.http.post(environment.api+request, p)
     }
 
+    actualizarProducto(id: number, p: Producto){
+        const request = '/productos/actualizarProducto/'+id
+        return this.http.put(environment.api+request, p)
+    }
+
     /* async getAll(): Promise<any> {
         const request = '/productos/obtenerProductos';
         const url = environment.api + request;
