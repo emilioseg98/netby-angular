@@ -24,6 +24,8 @@ export class ProductosComponent implements OnInit {
   private esCrearProducto: boolean;
   myControl = new FormControl('1');
   productos: Producto[]=[];
+  mensajeProductos: string="";
+  errors: any={};
   productoObj: Producto = {
     id: 0,
     nombre: "",
@@ -53,7 +55,8 @@ export class ProductosComponent implements OnInit {
       this._service.getAll().subscribe({
         next: (data) => {
           console.log('Datos recibidos:', data);
-          this.productos = data
+          if (data) this.productos = data
+          else this.mensajeProductos = "No existen datos";
         },
         error: (err) => {
           if (err.status === 0) {
@@ -61,6 +64,7 @@ export class ProductosComponent implements OnInit {
           } else {
             console.error('Error:', err);
           }
+          this.mensajeProductos = "Hubo un error con el sistema, por favor contactarse con el administrador!!!"
         }
       })
 
@@ -84,16 +88,35 @@ export class ProductosComponent implements OnInit {
   }
 
   isModalOpen = false;
+  isModalConfirmationOpen = false;
 
   openModal() {
     this.isModalOpen = true;
-    document.body.style.overflow = 'hidden';
+    /* document.body.style.overflow = 'hidden'; */
   }
   
   closeModal() {
     this.isModalOpen = false;
     this.esCrearProducto = true;
-    document.body.style.overflow = '';
+    /* document.body.style.overflow = ''; */
+  }
+
+  openModalConfirmation() {
+    this.isModalConfirmationOpen = true;
+  }
+
+  closeModalConfirmation(aceptar: boolean) {
+    this.isModalConfirmationOpen = false;
+    console.log(aceptar)
+
+    if(aceptar){
+      console.log("ENTRAAAA!!!!")
+      if(this.getEsCrearProducto) this.crearProducto()
+      else this.actualizarProducto(this.productoObj.id)
+      this.closeModal();
+    }else{
+      console.log("no entra")
+    }
   }
 
   obtenerProductoFunc(data: any) {
@@ -120,6 +143,43 @@ export class ProductosComponent implements OnInit {
 
   log(data: any){
     console.log("CATEGORIAS asdasda: ", data)
+  }
+
+  validarErrores () {
+    const newErrors: any={};
+
+    if(!this.productoObj.nombre){
+      newErrors.nombre = "Campo Requerido!"
+    }
+
+    if(!this.productoObj.categoriasProd.Nombre){
+      newErrors.categoria = "Campo Requerido!"
+    }
+
+    if(!this.productoObj.precio){
+      newErrors.precio = "Campo Requerido!"
+    }
+
+    if(!this.productoObj.stock){
+      newErrors.stock = "Campo Requerido!"
+    }
+
+    if(!this.productoObj.descripcion){
+      newErrors.descripcion = "Campo Requerido!"
+    }
+
+    if(!this.productoObj.fecha_Creacion){
+      newErrors.fecha = "Campo Requerido!"
+    }
+
+    this.errors = newErrors;
+
+    if (Object.keys(newErrors).length === 0) {
+      /* if(this.getEsCrearProducto) this.crearProducto()
+      else this.actualizarProducto(this.productoObj.id) */
+      this.openModalConfirmation()
+      console.log("asdasdads")
+    } 
   }
 
   crearProducto () {
