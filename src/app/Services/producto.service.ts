@@ -12,8 +12,8 @@ export class ProductoService {
 
     constructor() {}
 
-    getAll(){
-        const request = '/productos/obtenerProductos';
+    getAll(filtros: any){
+        const request = filtros.searchText ? '/productos/obtenerProductos/'+filtros.searchText : '/productos/obtenerProductos';
         return this.http.get<Producto[]>(
             environment.api+request
         );

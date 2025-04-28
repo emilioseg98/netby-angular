@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, SimpleChanges, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Producto } from '../../Models/productos.model';
@@ -52,23 +52,31 @@ export class ProductosComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this._service.getAll().subscribe({
-        next: (data) => {
-          console.log('Datos recibidos:', data);
-          if (data) this.productos = data
-          else this.mensajeProductos = "No existen datos";
-        },
-        error: (err) => {
-          if (err.status === 0) {
-            console.error('Error de conexión: El servidor no responde o hay problemas de CORS');
-          } else {
-            console.error('Error:', err);
-          }
-          this.mensajeProductos = "Hubo un error con el sistema, por favor contactarse con el administrador!!!"
-        }
-      })
+      this.obtenerProductosFunc(null);
 
       this.obtenerCategoriasFunc()
+  }
+
+  obtenerProductosFunc(data: any){
+    let searchText = "";
+    if(data){
+      searchText = (data.target as HTMLInputElement).value;
+    }
+    this._service.getAll({searchText}).subscribe({
+      next: (data) => {
+        console.log('Datos recibidos:', data);
+        if (data) this.productos = data
+        else this.mensajeProductos = "No existen datos";
+      },
+      error: (err) => {
+        if (err.status === 0) {
+          console.error('Error de conexión: El servidor no responde o hay problemas de CORS');
+        } else {
+          console.error('Error:', err);
+        }
+        this.mensajeProductos = "Hubo un error con el sistema, por favor contactarse con el administrador!!!"
+      }
+    })
   }
 
   obtenerCategoriasFunc(){
