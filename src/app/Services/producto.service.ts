@@ -3,6 +3,7 @@ import { Injectable, inject } from "@angular/core";
 import { environment } from "../../environments/environment";
 import axios from 'axios';
 import { Producto } from "../Models/productos.model";
+import { EliminarProductoResponse } from "../Models/eliminarProducto.model";
 
 @Injectable({
     providedIn: 'root'
@@ -41,6 +42,11 @@ export class ProductoService {
     actualizarProducto(id: number, p: Producto){
         const request = '/productos/actualizarProducto/'+id
         return this.http.put(environment.api+request, p)
+    }
+
+    eliminarProducto(id: number) {
+        const request = '/productos/eliminarProducto/'+id;
+        return this.http.delete<EliminarProductoResponse>(environment.api+request)
     }
 
     /* async getAll(): Promise<any> {

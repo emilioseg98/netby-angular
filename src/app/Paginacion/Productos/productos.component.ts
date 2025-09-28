@@ -40,7 +40,7 @@ export class ProductosComponent implements OnInit {
     stock: 0,
     fecha_Creacion: ''
   }
-  categorias: Array<{ Id: string; Nombre: string, Supercategoria: string }> = [];
+  categorias: Array<{ id: string; nombre: string, supercategoria: string }> = [];
   constructor(private _service:ProductoService) { this.esCrearProducto = true; }
 
   public get getEsCrearProducto(): boolean {
@@ -83,7 +83,12 @@ export class ProductosComponent implements OnInit {
     this._service.getCategoriasTA().subscribe({
       next: (data) => {
         console.log('Datos recibidos CAT:', data);
-        this.categorias = data
+        this.categorias = data.map(cat => ({
+          id: cat.Id,
+          nombre: cat.Nombre,
+          supercategoria: cat.Supercategoria
+        }))
+        console.log("Transformar Datos: ", this.categorias)
       },
       error: (err) => {
         if (err.status === 0) {
@@ -96,9 +101,17 @@ export class ProductosComponent implements OnInit {
   }
 
   isModalOpen = false;
+  isModalConfirmationGlobalOpen = false;
   isModalConfirmationOpen = false;
 
+  modalConfirmationSubMessage: string="Seguro que desea agregar el producto?"
+
+  compareCategoria(c1: any, c2: any): boolean {
+    return c1 && c2 ? c1.id === c2.id : c1 === c2;
+  }
+
   openModal() {
+    if (this.esCrearProducto) this.limpiarDatos();
     this.isModalOpen = true;
     /* document.body.style.overflow = 'hidden'; */
   }
@@ -107,6 +120,30 @@ export class ProductosComponent implements OnInit {
     this.isModalOpen = false;
     this.esCrearProducto = true;
     /* document.body.style.overflow = ''; */
+  }
+
+  openModalConfirmationGlobal() {
+    this.isModalConfirmationGlobalOpen = true;
+  }
+
+  closeModalConfirmationGlobal(aceptar: boolean) {
+    this.isModalConfirmationGlobalOpen = false;
+    if (aceptar) {
+      this._service.eliminarProducto(this.productoObj.id).subscribe({
+        next: (data) => {
+          console.log(data.message)
+          this.obtenerProductosFunc(null);
+        },
+        error: (err) => {
+          if (err.status === 0) {
+            console.error('Error de conexión: El servidor no responde o hay problemas de CORS');
+          } else {
+            console.error('Error:', err);
+          }
+        }
+      })
+    }
+    else {console.log("no entra")}
   }
 
   openModalConfirmation() {
@@ -145,8 +182,14 @@ export class ProductosComponent implements OnInit {
     })
   }
 
+  eliminarProductoFunc(data: any) {
+    this.modalConfirmationSubMessage = "Seguro que desea eliminar este registro?"
+    this.productoObj = data
+    this.openModalConfirmationGlobal()
+  }
+
   getTitle = (catId: string) => {
-    return this.categorias.find(c => c.Id === catId)?.Nombre ?? '';
+    return this.categorias.find(c => c.id === catId)?.nombre ?? '';
   }
 
   log(data: any){
@@ -160,7 +203,7 @@ export class ProductosComponent implements OnInit {
       newErrors.nombre = "Campo Requerido!"
     }
 
-    if(!this.productoObj.categoriasProd.Nombre){
+    if(!this.productoObj.categoriasProd.nombre){
       newErrors.categoria = "Campo Requerido!"
     }
 
@@ -199,6 +242,7 @@ export class ProductosComponent implements OnInit {
     this._service.agregarProductos(prod).subscribe({
       next: (data) => {
         this.closeModal()
+        this.obtenerProductosFunc(null);
       },
       error: (err) => {
         if (err.status === 0) {
@@ -218,6 +262,7 @@ export class ProductosComponent implements OnInit {
     this._service.actualizarProducto(id, prod).subscribe({
       next: (data) => {
         this.closeModal()
+        this.obtenerProductosFunc(null);
       },
       error: (err) => {
         if (err.status === 0) {
@@ -227,6 +272,23 @@ export class ProductosComponent implements OnInit {
         }
       }
     })
+  }
+
+  limpiarDatos () {
+    this.productoObj = {
+      id: 0,
+      nombre: "",
+      categoriasProd: {
+        id: '',
+        nombre: '',
+        supercategoria: ''
+      },
+      descripcion: '',
+      imagen: '',
+      precio: 0,
+      stock: 0,
+      fecha_Creacion: ''
+    }
   }
   
   title = 'Aqui van los productos';
