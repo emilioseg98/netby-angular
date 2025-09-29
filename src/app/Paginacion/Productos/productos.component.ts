@@ -257,7 +257,7 @@ export class ProductosComponent implements OnInit {
   actualizarProducto (id: number) {
     var prod = {
       ...this.productoObj,
-      categoriaId: (this.productoObj.categoriasProd as any)["Id"]
+      categoriaId: this.productoObj.categoriasProd.id
     }
     this._service.actualizarProducto(id, prod).subscribe({
       next: (data) => {
